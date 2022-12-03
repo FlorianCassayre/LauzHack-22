@@ -6,7 +6,7 @@ interface ImageCardProps {
     imageUrl: string;
 }
 
-export const ImageCard: React.FC<ImageCardProps> = ({ imageUrl }) => {
+export const ImageCropCard: React.FC<ImageCardProps> = ({ imageUrl }) => {
     const [crop, setCrop] = useState<Crop>();
     const handleConfirmSelection = () => {
         console.log(crop);
