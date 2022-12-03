@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Container, Grid, Stack, Typography } from '@mui/material';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Container, Divider, Grid, Stack, Typography } from '@mui/material';
 import { FileSelectCard } from './FileSelectCard';
 import { MainAppBar } from './MainAppBar';
 import { Delete } from '@mui/icons-material';
@@ -7,42 +7,52 @@ import { ImageCropCard } from './ImageCropCard';
 import { ImageMeta } from '../types/ImageMeta';
 import { ImageLabelCard } from './ImageLabelCard';
 import { mockImageLabels } from '../data/mock';
+import { CameraWidget } from './CameraWidget';
 
 export const Homepage: React.FC = () => {
-    const [fileSelected, setFileSelected] = useState<File | null>(null);
     const [imageMeta, setImageMeta] = useState<ImageMeta | null>(null);
-    useEffect(() => {
+    const [imageMetaLoading, setImageMetaLoading] = useState(false);
+    const handleImageUrlChange = useCallback((imageUrl: string) => {
+        const img = new Image();
+        img.onload = function() {
+            const { width, height } = this as any;
+            setImageMeta({ image: img, url: imageUrl, width, height });
+            setImageMetaLoading(false);
+        }
+        img.src = imageUrl;
+    }, [setImageMeta]);
+    const handleFileSelected = useCallback((fileSelected: File) => {
+        setImageMetaLoading(true);
         if (fileSelected) {
             const reader = new FileReader();
             reader.onload = () => {
                 const imageUrl = reader.result as string;
-                const img = new Image();
-                img.onload = function() {
-                    const { width, height } = this as any;
-                    setImageMeta({ image: img, url: imageUrl, width, height });
-                }
-                img.src = imageUrl;
+                handleImageUrlChange(imageUrl);
             };
             reader.readAsDataURL(fileSelected);
         } else {
             setImageMeta(null);
+            setImageMetaLoading(false);
         }
-    }, [fileSelected]);
+    }, [handleImageUrlChange]);
 
-    const handleFileSelected = (file: File) => {
-        setFileSelected(file);
-    };
     const handleResetFile = () => {
-        setFileSelected(null);
         setImageMeta(null);
+        setImageMetaLoading(false);
     }
 
     return (
         <>
             <MainAppBar />
             <Container sx={{ my: 3 }}>
-                {!fileSelected && (
-                    <FileSelectCard onFileSelected={handleFileSelected} />
+                {!imageMeta && (
+                    <>
+                        <FileSelectCard onFileSelected={handleFileSelected} disabled={imageMetaLoading} />
+                        <Divider sx={{ my: 2, textTransform: 'uppercase' }}>
+                            Or
+                        </Divider>
+                        <CameraWidget onPhotoTaken={(photoUrl) => handleImageUrlChange(photoUrl)} disabled={imageMetaLoading} />
+                    </>
                 )}
                 {!!imageMeta && (
                     <Grid container spacing={2}>
