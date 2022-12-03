@@ -1,6 +1,5 @@
 import React from 'react';
-import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material';
-import { Menu } from '@mui/icons-material';
+import { AppBar, Toolbar, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors'
 
 export const MainAppBar: React.FC = () => {

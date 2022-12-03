@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useRef, useState } from 'react';
+import React, { ChangeEventHandler, useRef } from 'react';
 import { Alert, Box, Card, CardActionArea, CardContent, Stack } from '@mui/material';
 import { FileUpload } from '@mui/icons-material';
 
@@ -38,7 +38,7 @@ export const FileSelectCard: React.FC<FileSelectCardProps> = ({ onFileSelected, 
             <Card variant="outlined" sx={{ width: '100%', borderStyle: 'dashed' }}>
                 <CardActionArea onClick={handleClick} disabled={disabled}>
                     <CardContent sx={{ my: 6 }}>
-                        <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
+                        <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
                             <FileUpload color="action" />
                             <Box color="text.secondary">
                                 Upload a file...

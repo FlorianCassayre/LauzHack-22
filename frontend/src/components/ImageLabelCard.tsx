@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { ImageMeta } from '../types/ImageMeta';
 import { ImageLabels } from '../types/ImageLabels';
 
@@ -9,7 +9,7 @@ interface ImageLabelCardProps {
 
 export const ImageLabelCard: React.FC<ImageLabelCardProps> = ({ imageMeta: { image, width, height }, imageLabels }) => {
     const ref = useRef<HTMLCanvasElement>(null);
-    const drawCanvas = (canvas: HTMLCanvasElement) => {
+    const drawCanvas = useCallback((canvas: HTMLCanvasElement) => {
         const ctx = canvas.getContext('2d')!;
         ctx.drawImage(image, 0, 0);
         ctx.fillStyle = 'rgb(0, 255, 0, 0.7)';
@@ -17,12 +17,12 @@ export const ImageLabelCard: React.FC<ImageLabelCardProps> = ({ imageMeta: { ima
             const width = xmax - xmin, height = ymax - ymin;
             ctx.fillRect(xmin, ymin, width, height);
         });
-    }
+    }, [image, imageLabels]);
     useEffect(() => {
         if (ref.current) {
             drawCanvas(ref.current);
         }
-    }, [ref]);
+    }, [ref, drawCanvas]);
     return (
         <canvas ref={ref} width={width} height={height} style={{ maxWidth: '100%' }} />
     );

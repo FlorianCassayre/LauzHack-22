@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Container, Divider, Grid, Stack, Typography } from '@mui/material';
+import React, { useCallback, useState } from 'react';
+import { Button, Container, Divider, Grid, LinearProgress, Typography } from '@mui/material';
 import { FileSelectCard } from './FileSelectCard';
 import { MainAppBar } from './MainAppBar';
 import { Delete } from '@mui/icons-material';
@@ -8,19 +8,27 @@ import { ImageMeta } from '../types/ImageMeta';
 import { ImageLabelCard } from './ImageLabelCard';
 import { mockImageLabels } from '../data/mock';
 import { CameraWidget } from './CameraWidget';
+import { useAsyncFn } from 'react-use';
+import { mockedPostImageFile } from '../api/backendApi';
+import { imageToBlob } from '../utils/image';
 
 export const Homepage: React.FC = () => {
     const [imageMeta, setImageMeta] = useState<ImageMeta | null>(null);
     const [imageMetaLoading, setImageMetaLoading] = useState(false);
+    const [{ loading: loadingUpload, value: valueUpload }, uploadImage] = useAsyncFn(mockedPostImageFile);
     const handleImageUrlChange = useCallback((imageUrl: string) => {
-        const img = new Image();
-        img.onload = function() {
+        const image = new Image();
+        image.onload = function() { // <- This has to be a function (because of the `this`)
             const { width, height } = this as any;
-            setImageMeta({ image: img, url: imageUrl, width, height });
-            setImageMetaLoading(false);
-        }
-        img.src = imageUrl;
-    }, [setImageMeta]);
+            // Create blob
+            imageToBlob(image, blob => {
+                uploadImage(blob);
+                setImageMeta({ image: image, url: imageUrl, width, height });
+                setImageMetaLoading(false);
+            });
+        };
+        image.src = imageUrl;
+    }, [uploadImage, setImageMeta]);
     const handleFileSelected = useCallback((fileSelected: File) => {
         setImageMetaLoading(true);
         if (fileSelected) {
@@ -44,17 +52,19 @@ export const Homepage: React.FC = () => {
     return (
         <>
             <MainAppBar />
+            {(imageMetaLoading || loadingUpload) && (
+                <LinearProgress />
+            )}
             <Container sx={{ my: 3 }}>
-                {!imageMeta && (
+                {(!imageMeta || imageMetaLoading || !valueUpload || loadingUpload) ? (
                     <>
-                        <FileSelectCard onFileSelected={handleFileSelected} disabled={imageMetaLoading} />
+                        <FileSelectCard onFileSelected={handleFileSelected} disabled={imageMetaLoading || loadingUpload} />
                         <Divider sx={{ my: 2, textTransform: 'uppercase' }}>
                             Or
                         </Divider>
-                        <CameraWidget onPhotoTaken={(photoUrl) => handleImageUrlChange(photoUrl)} disabled={imageMetaLoading} />
+                        <CameraWidget onPhotoTaken={(photoUrl) => handleImageUrlChange(photoUrl)} disabled={imageMetaLoading || loadingUpload} />
                     </>
-                )}
-                {!!imageMeta && (
+                ) : (
                     <Grid container spacing={2}>
                         <Grid item xs={12} textAlign="center">
                             <Button variant="outlined" startIcon={<Delete />} onClick={handleResetFile} sx={{ mb: 2 }}>
