@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Container, Stack } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Button, Container, Grid, Stack } from '@mui/material';
 import { FileSelectCard } from './FileSelectCard';
 import { MainAppBar } from './MainAppBar';
 import { Delete } from '@mui/icons-material';
+import { ImageCard } from './ImageCard';
 
 export const Homepage: React.FC = () => {
     const [fileSelected, setFileSelected] = useState<File | null>(null);
@@ -35,12 +36,16 @@ export const Homepage: React.FC = () => {
                     <FileSelectCard onFileSelected={handleFileSelected} />
                 )}
                 {!!fileRead && (
-                    <Stack direction="column" justifyContent="center">
-                        <Button variant="outlined" startIcon={<Delete />} onClick={handleResetFile} sx={{ mb: 2 }}>
-                            Remove file
-                        </Button>
-                        <img src={fileRead} alt="Preview" />
-                    </Stack>
+                    <Grid container>
+                        <Grid item xs={12} textAlign="center">
+                            <Button variant="outlined" startIcon={<Delete />} onClick={handleResetFile} sx={{ mb: 2 }}>
+                                Remove file
+                            </Button>
+                        </Grid>
+                        <Grid item xs={12} textAlign="center">
+                            <ImageCard imageUrl={fileRead} />
+                        </Grid>
+                    </Grid>
                 )}
             </Container>
         </>
