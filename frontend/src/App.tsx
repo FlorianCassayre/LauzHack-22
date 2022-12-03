@@ -4,14 +4,13 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { Button, CssBaseline } from '@mui/material';
+import { Homepage } from "./components/Homepage";
 
 function App() {
   return (
       <>
           <CssBaseline />
-          <div>
-              <Button variant="contained">Hello World</Button>
-          </div>
+          <Homepage />
       </>
   );
 }
