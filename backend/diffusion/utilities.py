@@ -4,7 +4,6 @@ import requests as r
 from PIL.WebPImagePlugin import Image
 import base64
 
-
 def convert_to_webp(original):
     converted = Image.open(original)
     path = original.split(".jpg")[0]
@@ -148,7 +147,7 @@ def fetch_result(request_id):
     return rep["generations"]
 
 
-def run(prompt, path, mask_path, output_folder):
+def run(prompt, path, mask_path, output_path):
     img_path = convert_to_webp_and_save(path)
     img_string = webp_to_string(img_path)
     mask_string = webp_to_string(mask_path)
@@ -165,7 +164,7 @@ def run(prompt, path, mask_path, output_folder):
         img = e["img"]
 
         imgdata = base64.b64decode(img)
-        filename = output_folder + f"modified-{prompt.replace(' ', '-')}-{i}.jpg"  # I assume you have a way of picking unique filenames
+        filename = output_path  # I assume you have a way of picking unique filenames
         with open(filename, 'wb') as f:
             f.write(imgdata)
 

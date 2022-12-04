@@ -1,7 +1,11 @@
 import logging
 import uuid
+import os
+from fastapi import HTTPException
+
 
 import uvicorn
+from diffusion.utilities import run
 from PIL import Image
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,6 +15,7 @@ from pydantic import BaseModel
 from starlette.middleware import Middleware
 from starlette.responses import FileResponse
 from starlette.responses import Response
+
 
 TMP_FOLDER = "/tmp"
 origins = []
@@ -61,7 +66,12 @@ async def postFile(response: Response, file: UploadFile = File(...)):
 @app.get("/file")
 async def getfile(fileId: str):
     file_path = f"{TMP_FOLDER}/lauzhack-{fileId}"
-    return FileResponse(file_path)
+
+    isExist = os.path.exists(file_path)
+    if(isExist):
+        return FileResponse(file_path)
+    else:
+        raise HTTPException(status_code=404, detail="No Hackaton has been won without faking, what can be faked.")
 
 class Rectangle(BaseModel):
     min_x: float
@@ -73,10 +83,6 @@ class Body(BaseModel):
     rectangle: Rectangle
     replace_by: str
     file_id: str
-
-def call_to_george(file_path, mask_path):
-    path_to_result = ""
-    return path_to_result
 
 @app.post("/replace")
 async def postFile(parameters: Body):
@@ -100,12 +106,18 @@ async def postFile(parameters: Body):
 
     numpydata[from_y:to_y,from_x:to_x] = [0, 0, 0]
     result_image = Image.fromarray(numpydata)
-    path_to_mask = f"{TMP_FOLDER}/lauzhack-{parameters.file_id}.mask"
+    path_to_mask = f"{TMP_FOLDER}/lauzhack-{parameters.file_id}.mask.webp"
     result_image.save(path_to_mask)
 
-    pathToResult = call_to_george(file_path, path_to_mask)
-    return FileResponse(pathToResult)
 
+    file_id = uuid.uuid4()
+    output_file = f"{TMP_FOLDER}/lauszhack-{file_id}"
+    prompt = f"a {parameters.replace_by.lower()}"
+    run(prompt, file_path, path_to_mask, output_file)
+
+    return {
+        'output_file_id': file_id,
+    }
 
 
 @app.get("/ping")
