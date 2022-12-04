@@ -42,7 +42,7 @@ export const mockedPostReplaceAreaImageFile: PostReplace = (fileId) => {
 export const getImageFile: GetFile = (fileId) => fetch(
     `${BACKEND_ENDPOINT}/file?fileId=${fileId}`,
     { method: 'GET' },
-).then(r => r.body);
+).then(r => r.blob());
 
 export const mockedGetImageFile: GetFile = (fileId) => {
     throw new Error('Not implemented');

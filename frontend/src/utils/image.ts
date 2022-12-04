@@ -10,3 +10,12 @@ export const imageToBlob = (image: HTMLImageElement, callback: (blob: Blob) => v
         }
     });
 };
+
+export const blobToImage = (blob: Blob, callback: (image: HTMLImageElement) => void) => {
+    const image = new Image();
+    const objectURL = URL.createObjectURL(blob);
+    image.onload = function () {
+        callback(image);
+    };
+    image.src = objectURL;
+};

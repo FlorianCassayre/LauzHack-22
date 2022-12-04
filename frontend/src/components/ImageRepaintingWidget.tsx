@@ -1,5 +1,5 @@
 import { Button, CircularProgress, Grid, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Delete } from '@mui/icons-material';
 import { mockImageLabels } from '../data/mock';
 import { ImageCropCard } from './ImageCropCard';
@@ -9,6 +9,7 @@ import { Crop } from 'react-image-crop';
 import { useAsyncFn } from 'react-use';
 import { ReplaceBy } from '../types/ReplaceBy';
 import { getImageFile, postReplaceAreaImageFile } from '../api/backendApi';
+import { blobToImage } from '../utils/image';
 
 const POLLING_INTERVAL = 2000;
 
@@ -21,6 +22,14 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
     // TODO labels
     const [{ loading: loadingReplace }, replaceImage] = useAsyncFn(postReplaceAreaImageFile);
     const [{ loading: loadingReplacedImage, value: valueReplacedImage }, getReplacedImage] = useAsyncFn(getImageFile);
+    const [replacedImage, setReplacedImage] = useState<HTMLImageElement | null>(null);
+    useEffect(() => {
+        if (valueReplacedImage) {
+            blobToImage(valueReplacedImage, setReplacedImage);
+        } else {
+            setReplacedImage(null);
+        }
+    }, [valueReplacedImage, setReplacedImage]);
 
     const handleCropConfirm = (crop: Crop, replaceBy: ReplaceBy) => {
         replaceImage({
@@ -54,7 +63,7 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
                         <Typography sx={{ mb: 1, fontWeight: 'medium' }}>
                             After
                         </Typography>
-                        <ImageLabelCard imageMeta={imageMeta} imageLabels={mockImageLabels} />
+                        <ImageLabelCard imageMeta={{ ...imageMeta, ...(replacedImage ? { image: replacedImage } : {}) }} imageLabels={mockImageLabels} />
                     </Grid>
                 </>
             ) : (
