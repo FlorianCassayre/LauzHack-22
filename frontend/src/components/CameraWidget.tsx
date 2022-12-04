@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Camera from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 import { Box, Button } from '@mui/material';
+import { NoPhotography, PhotoCamera } from '@mui/icons-material';
 
 interface CameraWidgetProps {
     onPhotoTaken: (photoUrl: string) => void;
@@ -12,7 +13,7 @@ export const CameraWidget: React.FC<CameraWidgetProps> = ({ onPhotoTaken, disabl
     const [open, setOpen] = useState(false);
     return (
         <Box textAlign="center">
-            <Button variant="outlined" onClick={() => setOpen(!open)} disabled={disabled}>
+            <Button variant="outlined" onClick={() => setOpen(!open)} disabled={disabled} startIcon={open ? <NoPhotography /> : <PhotoCamera />}>
                 {open ? 'Close' : 'Open'} Camera
             </Button>
             {open && (

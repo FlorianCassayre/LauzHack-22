@@ -5,13 +5,14 @@ interface PostImageResponse {
 }
 
 interface PostReplaceRequestBody {
+    file_id: string;
     rectangle: {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
+        min_x: number;
+        min_y: number;
+        max_x: number;
+        max_y: number;
     }
-    by: ReplaceBy;
+    replace_by: ReplaceBy;
 }
 
 interface PostReplaceResponse {
@@ -26,7 +27,7 @@ interface GetStatusResponse {
 
 export type PostImage = (imageBlob: Blob) => Promise<PostImageResponse>;
 
-export type PostReplace = (fileId: string, body: PostReplaceRequestBody) => Promise<PostReplaceResponse>;
+export type PostReplace = (body: PostReplaceRequestBody) => Promise<PostReplaceResponse>;
 
 export type GetFile = (fileId: string) => Promise<any>;
 
