@@ -60,7 +60,7 @@ async def postFile(response: Response, file: UploadFile = File(...)):
     (file_path, file_id) = await store_file(file)
 
     return {
-        'fileId': file_id,
+        'file_id': file_id,
     }
 
 @app.get("/file")
@@ -112,7 +112,7 @@ async def postFile(parameters: Body):
 
     file_id = uuid.uuid4()
     print(f"Output file is {file_id}")
-    output_file = f"{TMP_FOLDER}/lauszhack-{file_id}.jpg"
+    output_file = f"{TMP_FOLDER}/lauzhack-{file_id}.jpg"
     prompt = f"a {parameters.replace_by.lower()}"
 
     print("Diffuse bro")

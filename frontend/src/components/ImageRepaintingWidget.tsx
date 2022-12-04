@@ -19,17 +19,9 @@ interface ImageRepaintingWidgetProps {
 
 export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ imageMeta, onResetFile }) => {
     // TODO labels
-    const [{ loading: loadingReplace, value: valueReplace }, replaceImage] = useAsyncFn(postReplaceAreaImageFile);
+    const [{ loading: loadingReplace }, replaceImage] = useAsyncFn(postReplaceAreaImageFile);
     const [{ loading: loadingReplacedImage, value: valueReplacedImage }, getReplacedImage] = useAsyncFn(getImageFile);
-    /*useEffect(() => {
-        if (valueReplace) {
-            // Not great but works I guess
-            const intervalId = setInterval(() => {
-                getReplacedImage(valueReplace.fileId);
-            }, POLLING_INTERVAL);
-            return () => clearInterval(intervalId);
-        }
-    }, [valueReplace]);*/
+
     const handleCropConfirm = (crop: Crop, replaceBy: ReplaceBy) => {
         replaceImage({
             file_id: imageMeta.fileId,
@@ -40,13 +32,13 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
                 max_y: crop.y + crop.height,
             },
             replace_by: replaceBy,
-        });
+        }).then(({ file_id }) => getReplacedImage(file_id));
     };
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} textAlign="center">
-                <Button variant="outlined" startIcon={<Delete />} onClick={() => onResetFile()} sx={{ mb: 2 }}>
+                <Button variant="outlined" startIcon={<Delete />} onClick={() => onResetFile()} disabled={loadingReplace} sx={{ mb: 2 }}>
                     Remove file
                 </Button>
             </Grid>
