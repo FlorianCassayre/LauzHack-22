@@ -5,8 +5,6 @@ from fastapi import HTTPException
 
 
 import uvicorn
-
-from classifier.yolov5 import yolov5
 from diffusion.utilities import run
 from PIL import Image
 from fastapi import FastAPI, File, UploadFile
@@ -110,13 +108,13 @@ async def postFile(parameters: Body):
     #
     # if img.height % 64 != 0:
     #     new_height = img.height + (64 - img.height % 64)
-    #
-    # img = add_margin(img, new_width, new_height )
-    print(f"tmp_width={img.width} tmp_height={img.height}")
-    img = img.convert('RGB')
-    img.save(file_path)
-    # print(f"new_width={new_width} new_height={new_height}")
 
+    # img = add_margin(img, new_height, new_width )
+    # print(f"tmp_width={img.width} tmp_height={img.height}")
+    # img = img.convert('RGB')
+    # img.save(file_path)
+    # print(f"new_width={new_width} new_height={new_height}")
+    #
     # mask_image = Image.new(mode="RGB", size=(new_width, new_height))
     # Set it to black
     numpydata = asarray(img)
@@ -146,28 +144,17 @@ async def postFile(parameters: Body):
     ## resize back
     # if new_width != img.width or new_height != img.height:
     #     print("Resize back bro")
-        # new_file = Image.open(output_file)
-        # print(new_file.width, new_file.height)
-        #
-        # new_file = add_margin(new_file, old_height, old_width)
-        # new_file = new_file.convert('RGB')
-        #
-        # print("Après", new_file.width, new_file.height)
-        #new_file.save(output_file)
+    #     new_file = Image.open(output_file)
+    #     print(new_file.width, new_file.height)
+    #     new_file = add_margin(new_file, old_height, old_width)
+    #     new_file = new_file.convert('RGB')
+    #
+    #     print("Après", new_file.width, new_file.height)
+    #     new_file.save(output_file)
 
     return {
         'file_id': file_id,
     }
-
-
-@app.get("/classification")
-async def classification(fileId: str):
-    file_path = f"{TMP_FOLDER}/lauzhack-{fileId}.jpg"
-    isExist = os.path.exists(file_path)
-    if (isExist):
-        return yolov5(file_path)
-    else:
-        raise HTTPException(status_code=404)
 
 
 @app.get("/ping")

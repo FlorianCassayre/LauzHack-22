@@ -4,5 +4,8 @@ export enum ReplaceBy {
     Bicycle = 'BICYCLE',
     Park = 'PARK',
     Playground = 'PLAYGROUND',
+    Road = 'ROAD',
+    DiCaprio = 'DiCaprio',
+    Suprise = 'Duck',
     // TODO add more
 }

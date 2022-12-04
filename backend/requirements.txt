@@ -22,10 +22,6 @@ kiwisolver==1.4.4
 matplotlib==3.6.2
 matplotlib-inline==0.1.6
 numpy==1.23.5
-nvidia-cublas-cu11==11.10.3.66
-nvidia-cuda-nvrtc-cu11==11.7.99
-nvidia-cuda-runtime-cu11==11.7.99
-nvidia-cudnn-cu11==8.5.0.96
 opencv-python==4.6.0.66
 packaging==21.3
 pandas==1.5.2
