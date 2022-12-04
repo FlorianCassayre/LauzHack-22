@@ -8,7 +8,7 @@ export const MainAppBar: React.FC = () => {
         <AppBar position="static" sx={{ bgcolor: grey[800] }}>
             <Toolbar>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    LauzHack-22
+                    sust<span style={{ textDecoration: 'underline' }}>AI</span>nability
                 </Typography>
             </Toolbar>
         </AppBar>

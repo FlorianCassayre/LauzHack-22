@@ -4,6 +4,9 @@ import { Card, CircularProgress, Table, TableBody, TableCell, TableHead, TableRo
 
 const costs = {
     car: 5,
+    truck: 8,
+    pedestrian: -1,
+    cyclist: -2,
 } as any;
 
 interface EstimationCardProps {
@@ -21,7 +24,7 @@ export const EstimationCard: React.FC<EstimationCardProps> = ({ classification }
                }
                grouped[clazz]!.push(row);
             });
-            return Object.entries(grouped).map(([key, values]) => [parseInt(key), values] as const);
+            return Object.entries(grouped).map(([key, values]) => [parseInt(key), values] as const).sort(([, a], [, b]) => (b ?? []).length - (a ?? []).length);
         } else {
             return undefined;
         }
@@ -32,7 +35,7 @@ export const EstimationCard: React.FC<EstimationCardProps> = ({ classification }
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Element</TableCell>
+                            <TableCell>Criteria</TableCell>
                             <TableCell>Count</TableCell>
                             <TableCell>Cost</TableCell>
                         </TableRow>
@@ -48,7 +51,10 @@ export const EstimationCard: React.FC<EstimationCardProps> = ({ classification }
                                         {(values ?? []).length}
                                     </TableCell>
                                     <TableCell>
-                                        {costs[(values ?? [])[0][6]]}
+                                        <span style={{ color: costs[(values ?? [])[0][6]] > 0 ? 'red' : costs[(values ?? [])[0][6]] < 0 ? 'green' : undefined }}>
+                                            {costs[(values ?? [])[0][6]] ?? 0}
+                                        </span>
+                                        {' '} × {(values ?? []).length}
                                     </TableCell>
                                 </TableRow>
                             </Fragment>
@@ -61,7 +67,7 @@ export const EstimationCard: React.FC<EstimationCardProps> = ({ classification }
                                 {classification.length}
                             </TableCell>
                             <TableCell>
-                                {classification.map(arr => costs[arr[6]]).reduceRight((a, b) => a + b)}
+                                {classification.map(arr => costs[arr[6]] || 0).reduceRight((a, b) => a + b)}
                             </TableCell>
                         </TableRow>
                     </TableBody>

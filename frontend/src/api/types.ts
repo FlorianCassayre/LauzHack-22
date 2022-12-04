@@ -31,7 +31,7 @@ export type PostImage = (imageBlob: Blob) => Promise<PostImageResponse>;
 
 export type PostReplace = (body: PostReplaceRequestBody) => Promise<PostReplaceResponse>;
 
-export type GetFile = (fileId: string) => Promise<any>;
+export type GetFile = (fileId: string) => Promise<Blob>;
 
 export type GetStatus = (fileId: string) => Promise<GetStatusResponse>;
 

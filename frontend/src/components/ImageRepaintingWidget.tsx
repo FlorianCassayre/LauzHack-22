@@ -1,6 +1,6 @@
-import { Alert, Button, CircularProgress, Grid, Typography } from '@mui/material';
+import { Alert, Button, CircularProgress, Grid, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Delete } from '@mui/icons-material';
+import { Close, Delete, Download } from '@mui/icons-material';
 import { ImageCropCard } from './ImageCropCard';
 import { ImageLabelCard } from './ImageLabelCard';
 import { ImageMeta } from '../types/ImageMeta';
@@ -21,6 +21,7 @@ interface ImageRepaintingWidgetProps {
 export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ imageMeta, onResetFile }) => {
     // TODO labels
     const { enqueueSnackbar } = useSnackbar();
+    const [hideLabels, setHideLabels] = useState(true);
     const [{ loading: loadingReplace }, replaceImage] = useAsyncFn((body: Parameters<PostReplace>[0]) =>
         postReplaceAreaImageFile(body)
         .catch(e => {
@@ -62,12 +63,24 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
         })
             .then((obj) => obj && getReplacedImage(obj.file_id));
     };
+    const handleSave = () => {
+        if(valueReplacedImage) {
+            const a = document.createElement("a");
+            document.body.appendChild(a);
+            (a as any).style = "display: none";
+            const url = window.URL.createObjectURL(valueReplacedImage);
+            a.href = url;
+            a.download = 'sustAInability.webp';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    };
 
     return (
         <Grid container spacing={2} justifyContent="center">
             <Grid item xs={12} textAlign="center">
-                <Button variant="outlined" color="inherit" startIcon={<Delete />} onClick={() => onResetFile()} disabled={loadingReplace} sx={{ mb: 2 }}>
-                    Remove file
+                <Button variant="outlined" color="inherit" startIcon={<Close />} onClick={() => onResetFile()} disabled={loadingReplace} sx={{ mb: 2 }}>
+                    Close image
                 </Button>
             </Grid>
             {!loadingReplace ? (
@@ -85,7 +98,7 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
                                 Before
                             </Typography>
                         )}
-                        <ImageCropCard imageMeta={imageMeta} onCropConfirm={handleCropConfirm} />
+                        <ImageCropCard imageMeta={imageMeta} imageLabels={valueClassification ?? null} onCropConfirm={handleCropConfirm} hideLabels={hideLabels} setHideLabels={setHideLabels} />
                     </Grid>
                     {replacedImage && (
                         <Grid item xs={6} textAlign="center">
@@ -93,9 +106,14 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
                                 After
                             </Typography>
                             <ImageLabelCard imageMeta={{ ...imageMeta, ...(replacedImage ? { image: replacedImage } : {}) }} imageLabels={null /*valueClassification ?? null*/} hidden={false} />
+                            <Stack direction="row" justifyContent="center">
+                                <Button variant="outlined" size="large" startIcon={<Download />} onClick={handleSave} sx={{ mt: 2 }}>
+                                    Save result
+                                </Button>
+                            </Stack>
                         </Grid>
                     )}
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} md={6} sx={{ mt: 2 }}>
                         <EstimationCard classification={valueClassification ?? null} />
                     </Grid>
                 </>

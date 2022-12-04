@@ -22,7 +22,7 @@ export const ImageLabelCard: React.FC<ImageLabelCardProps> = ({ imageMeta: { ima
                 ctx.fillRect(xmin, ymin, width, height);
             });
         }
-    }, [image, imageLabels]);
+    }, [image, imageLabels, hidden]);
     useEffect(() => {
         if (ref.current) {
             drawCanvas(ref.current);
