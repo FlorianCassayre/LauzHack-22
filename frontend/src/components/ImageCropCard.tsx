@@ -1,17 +1,18 @@
 import React, { useRef, useState } from 'react';
 import ReactCrop, { Crop } from 'react-image-crop';
-import { Button } from '@mui/material';
 import { ImageMeta } from '../types/ImageMeta';
+import { ReplaceByDropdown } from './ReplaceByDropdown';
+import { ReplaceBy } from '../types/ReplaceBy';
 
 interface ImageCardProps {
     imageMeta: ImageMeta;
-    onCropConfirm: (crop: Crop) => void;
+    onCropConfirm: (crop: Crop, replaceBy: ReplaceBy) => void;
 }
 
 export const ImageCropCard: React.FC<ImageCardProps> = ({ imageMeta, onCropConfirm }) => {
     const ref = useRef<HTMLImageElement | null>(null);
     const [crop, setCrop] = useState<Crop>();
-    const handleConfirmSelection = () => {
+    const handleConfirmSelection = (replaceBy: ReplaceBy) => {
         if (crop && ref.current) {
             const image = ref.current;
             const c = imageMeta.width / image.width;
@@ -22,7 +23,7 @@ export const ImageCropCard: React.FC<ImageCardProps> = ({ imageMeta, onCropConfi
                 height: crop.height * c,
                 unit: crop.unit,
             };
-            onCropConfirm(modifiedCrop);
+            onCropConfirm(modifiedCrop, replaceBy);
         }
         setCrop(undefined);
     };
@@ -31,12 +32,7 @@ export const ImageCropCard: React.FC<ImageCardProps> = ({ imageMeta, onCropConfi
             <ReactCrop crop={crop} onChange={c => setCrop(c)}>
                 <img src={imageMeta.url} alt="Preview" ref={ref} />
             </ReactCrop>
-            {JSON.stringify(crop)}
-            {!!crop && (
-                <Button variant="outlined" onClick={handleConfirmSelection}>
-                    Confirm selection
-                </Button>
-            )}
+            <ReplaceByDropdown onClickReplaceBy={handleConfirmSelection} disabled={!crop} />
         </>
     );
 };

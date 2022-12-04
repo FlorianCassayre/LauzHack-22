@@ -20,13 +20,13 @@ export const mockedPostImageFile: PostImage = (imageBlob) => {
     })
 };
 
-export const postReplaceAreaImageFile: PostReplace = (fileId, body) => fetch(
-    `${BACKEND_ENDPOINT}/replace?filedId=${fileId}`,
+export const postReplaceAreaImageFile: PostReplace = (body) => fetch(
+    `${BACKEND_ENDPOINT}/replace?filedId=${body.file_id}`,
     {
         method: 'POST',
         body: JSON.stringify(body),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
     },
 ).then(r => r.json());
