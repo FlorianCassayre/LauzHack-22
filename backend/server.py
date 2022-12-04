@@ -85,14 +85,36 @@ class Body(BaseModel):
     replace_by: str
     file_id: str
 
+def add_margin(pil_img, top, right, bottom, left, color):
+    width, height = pil_img.size
+    new_width = width + right + left
+    new_height = height + top + bottom
+    result = Image.new(pil_img.mode, (new_width, new_height), color)
+    result.paste(pil_img, (left, top))
+    return result
+
 @app.post("/replace")
 async def postFile(parameters: Body):
     file_path = f"{TMP_FOLDER}/lauzhack-{parameters.file_id}.jpg"
-
     print("Create mask")
     img = Image.open(file_path)
-    mask_image = Image.new(mode="RGB", size=(img.width, img.height))
 
+    new_width = img.width
+    new_height = img.height
+    print(new_width, new_height)
+
+    if img.width % 64 != 0:
+        new_width = img.width + (64 - img.width % 64)
+
+    if img.height % 64 != 0:
+        new_height = img.height + (64 - img.height % 64)
+
+    img = add_margin(img, 0, new_height - img.height, new_width - img.width, 0, (0, 0, 0))
+    img = img.convert('RGB')
+    img.save(file_path)
+    print(f"old.img.width={img.width} old.img.height={img.width} new_width={new_width} new_height={new_height}")
+
+    mask_image = Image.new(mode="RGB", size=(img.width, img.height))
     # Set it to black
     numpydata = asarray(mask_image)
     numpydata = numpydata + 1
@@ -110,7 +132,6 @@ async def postFile(parameters: Body):
     path_to_mask = f"{TMP_FOLDER}/lauzhack-{parameters.file_id}.mask.webp"
     result_image.save(path_to_mask)
 
-
     file_id = uuid.uuid4()
     print(f"Output file is {file_id}")
     output_file = f"{TMP_FOLDER}/lauzhack-{file_id}.jpg"
@@ -118,6 +139,13 @@ async def postFile(parameters: Body):
 
     print("Diffuse bro")
     run(prompt, file_path, path_to_mask, output_file)
+
+    ## resize back
+    if new_width != img.width or new_height != img.height:
+        new_file = Image.open(output_file)
+        new_file = add_margin(new_file, 0, -(new_height - img.height), -(new_width - img.width), 0, (0, 0, 0))
+        new_file = new_file.convert('RGB')
+        new_file.save(output_file)
 
     return {
         'file_id': file_id,
