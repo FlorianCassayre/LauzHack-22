@@ -1,6 +1,6 @@
 import { Alert, Button, CircularProgress, Grid, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Close, Delete, Download } from '@mui/icons-material';
+import { Close, Download } from '@mui/icons-material';
 import { ImageCropCard } from './ImageCropCard';
 import { ImageLabelCard } from './ImageLabelCard';
 import { ImageMeta } from '../types/ImageMeta';

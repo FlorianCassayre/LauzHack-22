@@ -3,14 +3,14 @@ import React from 'react';
 import { ReplaceBy } from '../types/ReplaceBy';
 import {
     AddRoad,
-    ArrowDropDown,
+    ArrowDropDown, AutoFixHigh,
     ChildCare,
     DirectionsBike,
     Forest,
     Nature,
     Park, Person, Redeem,
     Signpost,
-    Transform
+    Transform,
 } from '@mui/icons-material';
 
 const replaceByItems: Partial<Record<ReplaceBy, { icon: React.ReactElement, label: string }>> = {
@@ -40,13 +40,21 @@ export const ReplaceByDropdown: React.FC<ReplaceByDropdownProps> = ({ onClickRep
     };
     return (
         <>
-            <Button variant="outlined" size="large" onClick={handleClick} startIcon={<ArrowDropDown />} endIcon={<Transform />} disabled={disabled}>
-                Replace by
+            <Button variant="outlined" size="large" onClick={handleClick} startIcon={<AutoFixHigh />} endIcon={<ArrowDropDown />} disabled={disabled}>
+                Replace selection
             </Button>
             <Menu
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
             >
                 {Object.entries(replaceByItems).map(([replaceBy, { label, icon }]) => (
                     <MenuItem key={replaceBy} onClick={() => onClickReplaceBy(replaceBy as ReplaceBy)}>

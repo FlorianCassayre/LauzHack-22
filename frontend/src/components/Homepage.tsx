@@ -23,13 +23,24 @@ export const Homepage: React.FC = () => {
         const image = new Image();
         image.onload = function() { // <- This has to be a function (because of the `this`)
             const { width, height } = this as any;
-            // Create blob
-            imageToBlob(image, blob => {
-                uploadImage(blob).then(({ file_id }) => {
-                    setImageMeta({ fileId: file_id, image: image, url: imageUrl, width, height });
-                    setImageMetaLoading(false);
+
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.floor(image.width / 64) * 64;
+            canvas.height = Math.floor(image.height / 64) * 64;
+            const ctx = canvas.getContext("2d")!;
+            ctx.drawImage(image, 0, 0);
+            const croppedUrl = canvas.toDataURL('image/wepb');
+            const croppedImage = new Image();
+            croppedImage.onload = function() {
+                // Create blob
+                imageToBlob(croppedImage, blob => {
+                    uploadImage(blob).then(({ file_id }) => {
+                        setImageMeta({ fileId: file_id, image: croppedImage, url: imageUrl, width, height });
+                        setImageMetaLoading(false);
+                    });
                 });
-            });
+            }
+            croppedImage.src = croppedUrl;
         };
         image.src = imageUrl;
     }, [uploadImage, setImageMeta]);

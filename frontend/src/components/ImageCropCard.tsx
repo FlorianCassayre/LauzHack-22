@@ -5,7 +5,8 @@ import { ReplaceByDropdown } from './ReplaceByDropdown';
 import { ReplaceBy } from '../types/ReplaceBy';
 import { Button, Stack } from '@mui/material';
 import { GetClassification } from '../api/types';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { ArrowDropDown, Visibility, VisibilityOff } from '@mui/icons-material';
+import { ReplaceFeatureDropdown } from './ReplaceFeatureDropdown';
 
 interface ImageCardProps {
     imageMeta: ImageMeta;
@@ -60,6 +61,7 @@ export const ImageCropCard: React.FC<ImageCardProps> = ({ imageMeta: { image, wi
             </ReactCrop>
             <Stack direction="row" spacing={2}>
                 <Button variant="outlined" startIcon={!hideLabels ? <Visibility /> : <VisibilityOff />} onClick={() => setHideLabels(!hideLabels)}>Features</Button>
+                {/*<ReplaceFeatureDropdown onClickReplaceBy={() => {}} disabled={!crop} />*/}
                 <ReplaceByDropdown onClickReplaceBy={handleConfirmSelection} disabled={!crop} />
             </Stack>
         </Stack>

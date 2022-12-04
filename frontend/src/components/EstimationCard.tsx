@@ -1,6 +1,18 @@
 import React, { Fragment, useMemo } from 'react';
 import { GetClassification } from '../api/types';
-import { Card, CircularProgress, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import {
+    Accordion,
+    AccordionDetails, AccordionSummary,
+    Card,
+    CircularProgress,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    Typography,
+} from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
 
 const costs = {
     car: 5,
@@ -30,51 +42,58 @@ export const EstimationCard: React.FC<EstimationCardProps> = ({ classification }
         }
     }, [classification]);
     return (
-        <Card variant="outlined" sx={{ textAlign: 'center' }}>
-            {classification ? (
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Criteria</TableCell>
-                            <TableCell>Count</TableCell>
-                            <TableCell>Cost</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {groupedClassification!.map(([category, values], i) => (
-                            <Fragment key={category}>
-                                <TableRow>
-                                    <TableCell>
-                                        {values![0][6][0].toUpperCase() + values![0][6].slice(1)}
-                                    </TableCell>
-                                    <TableCell>
-                                        {(values ?? []).length}
-                                    </TableCell>
-                                    <TableCell>
+        <Accordion variant="outlined">
+            <AccordionSummary
+                expandIcon={<ExpandMore />}
+            >
+                <Typography>Statistics</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ textAlign: "center" }}>
+                {classification ? (
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Criteria</TableCell>
+                                <TableCell>Count</TableCell>
+                                <TableCell>Cost</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {groupedClassification!.map(([category, values], i) => (
+                                <Fragment key={category}>
+                                    <TableRow>
+                                        <TableCell>
+                                            {values![0][6][0].toUpperCase() + values![0][6].slice(1)}
+                                        </TableCell>
+                                        <TableCell>
+                                            {(values ?? []).length}
+                                        </TableCell>
+                                        <TableCell>
                                         <span style={{ color: costs[(values ?? [])[0][6]] > 0 ? 'red' : costs[(values ?? [])[0][6]] < 0 ? 'green' : undefined }}>
                                             {costs[(values ?? [])[0][6]] ?? 0}
                                         </span>
-                                        {' '} × {(values ?? []).length}
-                                    </TableCell>
-                                </TableRow>
-                            </Fragment>
-                        ))}
-                        <TableRow>
-                            <TableCell>
-                                <strong>Total</strong>
-                            </TableCell>
-                            <TableCell>
-                                {classification.length}
-                            </TableCell>
-                            <TableCell>
-                                {classification.map(arr => costs[arr[6]] || 0).reduceRight((a, b) => a + b)}
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            ) : (
-                <CircularProgress sx={{ my: 2 }} />
-            )}
-        </Card>
+                                            {' '} × {(values ?? []).length}
+                                        </TableCell>
+                                    </TableRow>
+                                </Fragment>
+                            ))}
+                            <TableRow>
+                                <TableCell>
+                                    <strong>Total</strong>
+                                </TableCell>
+                                <TableCell>
+                                    {classification.length}
+                                </TableCell>
+                                <TableCell>
+                                    {classification.map(arr => costs[arr[6]] || 0).reduceRight((a, b) => a + b)}
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                ) : (
+                    <CircularProgress sx={{ my: 2 }} />
+                )}
+            </AccordionDetails>
+        </Accordion>
     );
 };
