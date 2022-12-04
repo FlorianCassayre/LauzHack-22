@@ -23,6 +23,8 @@ interface GetStatusResponse {
     status: any; // TODO
 }
 
+type GetClassificationResponse = [xmin: number, ymin: number, xmax: number, ymax: number, confidence: number, clazz: number, name: string][];
+
 // Methods
 
 export type PostImage = (imageBlob: Blob) => Promise<PostImageResponse>;
@@ -32,3 +34,5 @@ export type PostReplace = (body: PostReplaceRequestBody) => Promise<PostReplaceR
 export type GetFile = (fileId: string) => Promise<any>;
 
 export type GetStatus = (fileId: string) => Promise<GetStatusResponse>;
+
+export type GetClassification = (fileId: string) => Promise<GetClassificationResponse>;

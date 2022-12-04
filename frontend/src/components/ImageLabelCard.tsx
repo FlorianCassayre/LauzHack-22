@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { ImageMeta } from '../types/ImageMeta';
-import { ImageLabels } from '../types/ImageLabels';
+import { GetClassification } from '../api/types';
 
 interface ImageLabelCardProps {
     imageMeta: ImageMeta;
-    imageLabels: ImageLabels;
+    imageLabels: Awaited<ReturnType<GetClassification>> | null;
     hidden: boolean;
 }
 
@@ -17,7 +17,7 @@ export const ImageLabelCard: React.FC<ImageLabelCardProps> = ({ imageMeta: { ima
         if (!hidden) {
             ctx.drawImage(image, 0, 0);
             ctx.fillStyle = 'rgb(0, 255, 0, 0.7)';
-            imageLabels.data.forEach(([xmin, ymin, xmax, ymax, confidence, clazz, name]) => {
+            imageLabels && imageLabels.forEach(([xmin, ymin, xmax, ymax, confidence, clazz, name]) => {
                 const width = xmax - xmin, height = ymax - ymin;
                 ctx.fillRect(xmin, ymin, width, height);
             });

@@ -3,6 +3,7 @@ import ReactCrop, { Crop } from 'react-image-crop';
 import { ImageMeta } from '../types/ImageMeta';
 import { ReplaceByDropdown } from './ReplaceByDropdown';
 import { ReplaceBy } from '../types/ReplaceBy';
+import { Stack } from '@mui/material';
 
 interface ImageCardProps {
     imageMeta: ImageMeta;
@@ -28,11 +29,11 @@ export const ImageCropCard: React.FC<ImageCardProps> = ({ imageMeta, onCropConfi
         setCrop(undefined);
     };
     return (
-        <>
+        <Stack direction="column" alignItems="center" spacing={2}>
             <ReactCrop crop={crop} onChange={c => setCrop(c)}>
                 <img src={imageMeta.url} alt="Preview" ref={ref} />
             </ReactCrop>
             <ReplaceByDropdown onClickReplaceBy={handleConfirmSelection} disabled={!crop} />
-        </>
+        </Stack>
     );
 };
