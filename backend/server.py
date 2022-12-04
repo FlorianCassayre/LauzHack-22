@@ -119,11 +119,6 @@ async def postFile(parameters: Body):
     return FileResponse(pathToResult)
 
 
-@app.post("/status")
-async def status(fileId: str):
-    fileId = "coming"
-    # todo
-
 
 @app.get("/ping")
 async def ping():
