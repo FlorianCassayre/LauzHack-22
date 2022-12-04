@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Grid, Typography } from '@mui/material';
+import { Alert, Button, CircularProgress, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Delete } from '@mui/icons-material';
 import { mockImageLabels } from '../data/mock';
@@ -59,7 +59,7 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
     };
 
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} justifyContent="center">
             <Grid item xs={12} textAlign="center">
                 <Button variant="outlined" color="inherit" startIcon={<Delete />} onClick={() => onResetFile()} disabled={loadingReplace} sx={{ mb: 2 }}>
                     Remove file
@@ -67,18 +67,29 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
             </Grid>
             {!loadingReplace ? (
                 <>
-                    <Grid item xs={6} textAlign="center">
-                        <Typography sx={{ mb: 1, fontWeight: 'medium' }}>
-                            Before
-                        </Typography>
+                    {!replacedImage && (
+                        <Grid item xs={12} md={8}>
+                            <Alert severity="info">
+                                Select the area that you would like to repaint, and choose a replacement by clicking on the button below.
+                            </Alert>
+                        </Grid>
+                    )}
+                    <Grid item xs={replacedImage ? 6 : 12} textAlign="center">
+                        {replacedImage && (
+                            <Typography sx={{ mb: 1, fontWeight: 'medium' }}>
+                                Before
+                            </Typography>
+                        )}
                         <ImageCropCard imageMeta={imageMeta} onCropConfirm={handleCropConfirm} />
                     </Grid>
-                    <Grid item xs={6} textAlign="center">
-                        <Typography sx={{ mb: 1, fontWeight: 'medium' }}>
-                            After
-                        </Typography>
-                        <ImageLabelCard imageMeta={{ ...imageMeta, ...(replacedImage ? { image: replacedImage } : {}) }} imageLabels={mockImageLabels} hidden={!replacedImage} />
-                    </Grid>
+                    {replacedImage && (
+                        <Grid item xs={6} textAlign="center">
+                            <Typography sx={{ mb: 1, fontWeight: 'medium' }}>
+                                After
+                            </Typography>
+                            <ImageLabelCard imageMeta={{ ...imageMeta, ...(replacedImage ? { image: replacedImage } : {}) }} imageLabels={mockImageLabels} hidden={!replacedImage} />
+                        </Grid>
+                    )}
                 </>
             ) : (
                 <Grid item xs={12} textAlign="center">

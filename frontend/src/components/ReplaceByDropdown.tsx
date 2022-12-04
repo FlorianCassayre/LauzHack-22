@@ -24,7 +24,7 @@ export const ReplaceByDropdown: React.FC<ReplaceByDropdownProps> = ({ onClickRep
     };
     return (
         <>
-            <Button variant="outlined" onClick={handleClick} startIcon={<ArrowDropDown />} endIcon={<Transform />} disabled={disabled}>
+            <Button variant="outlined" size="large" onClick={handleClick} startIcon={<ArrowDropDown />} endIcon={<Transform />} disabled={disabled}>
                 Replace by
             </Button>
             <Menu
