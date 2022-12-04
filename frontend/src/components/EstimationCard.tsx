@@ -85,7 +85,7 @@ export const EstimationCard: React.FC<EstimationCardProps> = ({ classification }
                                     {classification.length}
                                 </TableCell>
                                 <TableCell>
-                                    {classification.map(arr => costs[arr[6]] || 0).reduceRight((a, b) => a + b)}
+                                    {classification.map(arr => costs[arr[6]] || 0).reduce((a, b) => a + b, 0)}
                                 </TableCell>
                             </TableRow>
                         </TableBody>

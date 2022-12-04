@@ -3,7 +3,8 @@ import time
 import requests as r
 from PIL.WebPImagePlugin import Image
 import base64
-API_KEY = "KPVtGnBF0d8rdCuDW4r-Mw"
+import os
+API_KEY = str(os.getenv("DIFKEY"))
 
 def convert_to_webp(original):
     converted = Image.open(original)
