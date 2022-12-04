@@ -61,7 +61,7 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} textAlign="center">
-                <Button variant="outlined" startIcon={<Delete />} onClick={() => onResetFile()} disabled={loadingReplace} sx={{ mb: 2 }}>
+                <Button variant="outlined" color="inherit" startIcon={<Delete />} onClick={() => onResetFile()} disabled={loadingReplace} sx={{ mb: 2 }}>
                     Remove file
                 </Button>
             </Grid>
@@ -77,7 +77,7 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
                         <Typography sx={{ mb: 1, fontWeight: 'medium' }}>
                             After
                         </Typography>
-                        <ImageLabelCard imageMeta={{ ...imageMeta, ...(replacedImage ? { image: replacedImage } : {}) }} imageLabels={mockImageLabels} />
+                        <ImageLabelCard imageMeta={{ ...imageMeta, ...(replacedImage ? { image: replacedImage } : {}) }} imageLabels={mockImageLabels} hidden={!replacedImage} />
                     </Grid>
                 </>
             ) : (

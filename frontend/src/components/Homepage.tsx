@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Box, Container, Divider, LinearProgress } from '@mui/material';
+import { Box, Container, Divider, LinearProgress, Link, Stack } from '@mui/material';
 import { FileSelectCard } from './FileSelectCard';
 import { MainAppBar } from './MainAppBar';
 import { ImageMeta } from '../types/ImageMeta';
@@ -9,6 +9,7 @@ import { postImageFile } from '../api/backendApi';
 import { imageToBlob } from '../utils/image';
 import { ImageRepaintingWidget } from './ImageRepaintingWidget';
 import { useSnackbar } from 'notistack';
+import { GitHub } from '@mui/icons-material';
 
 export const Homepage: React.FC = () => {
     const { enqueueSnackbar } = useSnackbar();
@@ -53,7 +54,7 @@ export const Homepage: React.FC = () => {
     };
 
     return (
-        <>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <MainAppBar />
             {(imageMetaLoading || loadingUpload) && (
                 <LinearProgress />
@@ -62,7 +63,7 @@ export const Homepage: React.FC = () => {
                 {(!imageMeta || imageMetaLoading || !valueUpload || loadingUpload) ? (
                     <>
                         <FileSelectCard onFileSelected={handleFileSelected} disabled={imageMetaLoading || loadingUpload} />
-                        <Divider sx={{ my: 2, textTransform: 'uppercase' }}>
+                        <Divider sx={{ my: 4, textTransform: 'uppercase' }}>
                             Or
                         </Divider>
                         <CameraWidget onPhotoTaken={(photoUrl) => handleImageUrlChange(photoUrl)} disabled={imageMetaLoading || loadingUpload} />
@@ -71,6 +72,18 @@ export const Homepage: React.FC = () => {
                     <ImageRepaintingWidget imageMeta={imageMeta} onResetFile={handleResetFile} />
                 )}
             </Container>
-        </>
+            <Box textAlign="center" sx={{ mt: 'auto', bgcolor: 'grey.200', py: 3, color: 'text.secondary' }}>
+                <Stack spacing={2}>
+                    <Box>
+                        Developed for <Link href="https://lauzhack.com/" target="_blank">LauzHack 2022</Link>
+                    </Box>
+                    <Box>
+                        <Link href="https://github.com/FlorianCassayre/LauzHack-22" target="_blank" color="inherit">
+                            <GitHub />
+                        </Link>
+                    </Box>
+                </Stack>
+            </Box>
+        </Box>
     );
 }
