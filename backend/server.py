@@ -97,24 +97,27 @@ async def postFile(parameters: Body):
     img = Image.open(file_path)
     print(f"old_width={img.width} old_height={img.height}")
 
-    new_width = img.width
-    new_height = img.height
-
-    if img.width % 64 != 0:
-        new_width = img.width + (64 - img.width % 64)
-
-    if img.height % 64 != 0:
-        new_height = img.height + (64 - img.height % 64)
-
-    img = add_margin(img, new_height, new_width )
+    # old_width = img.width
+    # old_height = img.height
+    #
+    # new_width = img.width
+    # new_height = img.height
+    #
+    # if img.width % 64 != 0:
+    #     new_width = img.width + (64 - img.width % 64)
+    #
+    # if img.height % 64 != 0:
+    #     new_height = img.height + (64 - img.height % 64)
+    #
+    # img = add_margin(img, new_width, new_height )
     print(f"tmp_width={img.width} tmp_height={img.height}")
     img = img.convert('RGB')
     img.save(file_path)
-    print(f"new_width={new_width} new_height={new_height}")
+    # print(f"new_width={new_width} new_height={new_height}")
 
-    mask_image = Image.new(mode="RGB", size=(new_width, new_height))
+    # mask_image = Image.new(mode="RGB", size=(new_width, new_height))
     # Set it to black
-    numpydata = asarray(mask_image)
+    numpydata = asarray(img)
     numpydata = numpydata + 1
     numpydata = numpydata * 255
 
@@ -139,11 +142,16 @@ async def postFile(parameters: Body):
     run(prompt, file_path, path_to_mask, output_file)
 
     ## resize back
-    if new_width != img.width or new_height != img.height:
-        new_file = Image.open(output_file)
-        new_file = add_margin(new_file, new_height, new_width)
-        new_file = new_file.convert('RGB')
-        new_file.save(output_file)
+    # if new_width != img.width or new_height != img.height:
+    #     print("Resize back bro")
+        # new_file = Image.open(output_file)
+        # print(new_file.width, new_file.height)
+        #
+        # new_file = add_margin(new_file, old_height, old_width)
+        # new_file = new_file.convert('RGB')
+        #
+        # print("Après", new_file.width, new_file.height)
+        #new_file.save(output_file)
 
     return {
         'file_id': file_id,

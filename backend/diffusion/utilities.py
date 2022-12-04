@@ -86,13 +86,10 @@ def generate_image(prompt):
 
     params = {
         "prompt": prompt,
+        "models": ["stable_diffusion"],
         "params": {
             "sampler_name": "k_euler",
-            "toggles": [
-                1,
-                4
-            ],
-            "cfg_scale": 5,
+            "cfg_scale": 7,
             "denoising_strength": 0.75,
             "seed": "42",
             "height": 512,
@@ -101,12 +98,12 @@ def generate_image(prompt):
             "post_processing": [
                 "GFPGAN"
             ],
-            "karras": False,
+            "karras": True,
             "steps": 50,
             "n": 1
         },
         "nsfw": False,
-        "trusted_workers": True,
+        "trusted_workers": False,
         "censor_nsfw": False,
         # "source_image": img,
         # "source_processing": "img2img",

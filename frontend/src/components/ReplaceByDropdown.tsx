@@ -1,11 +1,14 @@
-import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import {Button, Card, ListItemIcon, ListItemText, Menu, MenuItem} from '@mui/material';
 import React from 'react';
 import { ReplaceBy } from '../types/ReplaceBy';
-import { ArrowDropDown, Forest, Nature, Transform } from '@mui/icons-material';
+import {ArrowDropDown, ChildCare, DirectionsBike, Forest, Nature, Park, Transform} from '@mui/icons-material';
 
 const replaceByItems: Partial<Record<ReplaceBy, { icon: React.ReactElement, label: string }>> = {
     [ReplaceBy.Tree]: { label: 'Tree', icon: <Nature /> },
     [ReplaceBy.Bush]: { label: 'Bush', icon: <Forest /> },
+    [ReplaceBy.Park]: { label: 'Park', icon: <Park /> },
+    [ReplaceBy.Bicycle]: { label: 'Bicycle', icon: <DirectionsBike /> },
+    [ReplaceBy.Playground]: { label: 'Playground', icon: <ChildCare /> },
 };
 
 interface ReplaceByDropdownProps {
