@@ -1,17 +1,17 @@
 import { Alert, Button, CircularProgress, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Delete } from '@mui/icons-material';
-import { mockImageLabels } from '../data/mock';
 import { ImageCropCard } from './ImageCropCard';
 import { ImageLabelCard } from './ImageLabelCard';
 import { ImageMeta } from '../types/ImageMeta';
 import { Crop } from 'react-image-crop';
-import { useAsyncFn } from 'react-use';
+import { useAsync, useAsyncFn } from 'react-use';
 import { ReplaceBy } from '../types/ReplaceBy';
-import { getImageFile, postReplaceAreaImageFile } from '../api/backendApi';
+import { getClassification, getImageFile, postReplaceAreaImageFile } from '../api/backendApi';
 import { blobToImage } from '../utils/image';
 import { useSnackbar } from 'notistack';
 import { GetFile, PostReplace } from '../api/types';
+import { EstimationCard } from './EstimationCard';
 
 interface ImageRepaintingWidgetProps {
     imageMeta: ImageMeta;
@@ -35,6 +35,11 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
                 throw e;
             })
     );
+    const { value: valueClassification, loading: loadingClassification } = useAsync(() => getClassification(imageMeta.fileId).catch(e => {
+        enqueueSnackbar('An error occurred while detecting the objects on the image', { variant: 'error' });
+        throw e;
+    }));
+
     const [replacedImage, setReplacedImage] = useState<HTMLImageElement | null>(null);
     useEffect(() => {
         if (valueReplacedImage) {
@@ -68,7 +73,7 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
             {!loadingReplace ? (
                 <>
                     {!replacedImage && (
-                        <Grid item xs={12} md={8}>
+                        <Grid item xs={12}>
                             <Alert severity="info">
                                 Select the area that you would like to repaint, and choose a replacement by clicking on the button below.
                             </Alert>
@@ -87,9 +92,12 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
                             <Typography sx={{ mb: 1, fontWeight: 'medium' }}>
                                 After
                             </Typography>
-                            <ImageLabelCard imageMeta={{ ...imageMeta, ...(replacedImage ? { image: replacedImage } : {}) }} imageLabels={mockImageLabels} hidden={!replacedImage} />
+                            <ImageLabelCard imageMeta={{ ...imageMeta, ...(replacedImage ? { image: replacedImage } : {}) }} imageLabels={null /*valueClassification ?? null*/} hidden={false} />
                         </Grid>
                     )}
+                    <Grid item xs={12} md={6}>
+                        <EstimationCard classification={valueClassification ?? null} />
+                    </Grid>
                 </>
             ) : (
                 <Grid item xs={12} textAlign="center">

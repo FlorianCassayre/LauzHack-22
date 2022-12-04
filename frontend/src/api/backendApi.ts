@@ -1,4 +1,4 @@
-import { GetFile, GetStatus, PostImage, PostReplace } from './types';
+import { GetClassification, GetFile, GetStatus, PostImage, PostReplace } from './types';
 
 const BACKEND_ENDPOINT = process.env.REACT_APP_BACKEND_ENDPOINT as string;
 
@@ -56,3 +56,8 @@ export const getImageFileStatus: GetStatus = (fileId) => fetch(
 export const mockedGetImageFileStatus: GetStatus = (fileId) => {
     throw new Error('Not implemented');
 };
+
+export const getClassification: GetClassification = (fileId) => fetch(
+    `${BACKEND_ENDPOINT}/classification?fileId=${fileId}`,
+    { method: 'GET' },
+).then(r => r.json());

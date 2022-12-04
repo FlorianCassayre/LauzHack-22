@@ -5,6 +5,8 @@ from fastapi import HTTPException
 
 
 import uvicorn
+
+from classifier.yolov5 import yolov5
 from diffusion.utilities import run
 from PIL import Image
 from fastapi import FastAPI, File, UploadFile
@@ -148,6 +150,16 @@ async def postFile(parameters: Body):
     return {
         'file_id': file_id,
     }
+
+
+@app.get("/classification")
+async def classification(fileId: str):
+    file_path = f"{TMP_FOLDER}/lauzhack-{fileId}.jpg"
+    isExist = os.path.exists(file_path)
+    if (isExist):
+        return yolov5(file_path)
+    else:
+        raise HTTPException(status_code=404)
 
 
 @app.get("/ping")

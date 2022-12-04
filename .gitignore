@@ -8,3 +8,4 @@ secrets
 node_modules
 build
 npm-debug.log*
+yolov5s.pt
