@@ -15,12 +15,13 @@ def convert_to_webp(original):
 
 
 def convert_to_webp_and_save(original):
+    print("=> Generate webp")
     converted = Image.open(original)
     path = original.split(".jpg")[0]
     output = path + ".webp"
     converted.save(output, "webp")
-    with open(original, "rb") as image2string:
-        converted_string = base64.b64encode(image2string.read())
+    # with open(original, "rb") as image2string:
+    #     converted_string = base64.b64encode(image2string.read())
     return output
 
 
@@ -30,7 +31,7 @@ def webp_to_string(path):
     return converted_string
 
 
-def upload_image_with_mask(img, mask, prompt):
+def upload_image_with_mask(img, mask, prompt, width, height):
     endpoint = "https://stablehorde.net/api/v2/generate/async"
 
     headers = {"apikey": "hvKgnDdSlofSskGJP-qEJQ", "Content-Type": "application/json"}
@@ -46,8 +47,8 @@ def upload_image_with_mask(img, mask, prompt):
             "cfg_scale": 5,
             "denoising_strength": 0.75,
             "seed": "42",
-            "height": 675,
-            "width": 1200,
+            "height": height,
+            "width": width,
             "seed_variation": 1,
             "post_processing": [
                 "GFPGAN"
@@ -70,11 +71,14 @@ def upload_image_with_mask(img, mask, prompt):
     rep = r.post(url=endpoint, json=params, headers=headers)
 
     print(rep)
+    print(rep.json())
+
 
     return rep.json()["id"]
 
 
 def generate_image(prompt):
+    print("Generate image")
     endpoint = "https://stablehorde.net/api/v2/generate/async"
 
     headers = {"apikey": "hvKgnDdSlofSskGJP-qEJQ", "Content-Type": "application/json"}
@@ -148,16 +152,24 @@ def fetch_result(request_id):
 
 
 def run(prompt, path, mask_path, output_path):
+    print("Prompt: ", prompt, "path=", path, "mask_path=", mask_path, "output_path=", output_path)
+
+    input_image = Image.open(path)
+
+    print("Call convert_to_webp_and_save")
     img_path = convert_to_webp_and_save(path)
     img_string = webp_to_string(img_path)
     mask_string = webp_to_string(mask_path)
-    id = upload_image_with_mask(img_string, mask_string, prompt)
-    done = check_progress(id)
+    id = upload_image_with_mask(img_string, mask_string, prompt, input_image.width, input_image.height)
+    # id = generate_image(prompt)
 
+    print("Check if image done")
+    done = check_progress(id)
     while not done:
         done = check_progress(id)
         time.sleep(0.5)
 
+    print("Image done processing, get result")
     results = fetch_result(id)
 
     for i, e in enumerate(results):

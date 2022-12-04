@@ -44,7 +44,7 @@ add_timing_middleware(app, record=logger.info, prefix="app", exclude="untimed")
 async def store_file(file):
     # Save file
     file_id = uuid.uuid4()
-    file_path = f"{TMP_FOLDER}/lauzhack-{file_id}"
+    file_path = f"{TMP_FOLDER}/lauzhack-{file_id}.jpg"
 
     with open(file_path, "wb") as binary_file:
         binary_file.write(await file.read())
@@ -65,7 +65,7 @@ async def postFile(response: Response, file: UploadFile = File(...)):
 
 @app.get("/file")
 async def getfile(fileId: str):
-    file_path = f"{TMP_FOLDER}/lauzhack-{fileId}"
+    file_path = f"{TMP_FOLDER}/lauzhack-{fileId}.jpg"
 
     isExist = os.path.exists(file_path)
     if(isExist):
@@ -86,9 +86,9 @@ class Body(BaseModel):
 
 @app.post("/replace")
 async def postFile(parameters: Body):
-    file_path = f"{TMP_FOLDER}/lauzhack-{parameters.file_id}"
+    file_path = f"{TMP_FOLDER}/lauzhack-{parameters.file_id}.jpg"
 
-    # call you
+    print("Create mask")
     img = Image.open(file_path)
     mask_image = Image.new(mode="RGB", size=(img.width, img.height))
 
@@ -111,12 +111,15 @@ async def postFile(parameters: Body):
 
 
     file_id = uuid.uuid4()
-    output_file = f"{TMP_FOLDER}/lauszhack-{file_id}"
+    print(f"Output file is {file_id}")
+    output_file = f"{TMP_FOLDER}/lauszhack-{file_id}.jpg"
     prompt = f"a {parameters.replace_by.lower()}"
+
+    print("Diffuse bro")
     run(prompt, file_path, path_to_mask, output_file)
 
     return {
-        'output_file_id': file_id,
+        'file_id': file_id,
     }
 
 
