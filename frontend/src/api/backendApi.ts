@@ -20,26 +20,35 @@ export const mockedPostImageFile: PostImage = (imageBlob) => {
     })
 };
 
-export const postReplaceAreaImageFile: PostReplace = (fileId: string) => {
+export const postReplaceAreaImageFile: PostReplace = (fileId, body) => fetch(
+    `${BACKEND_ENDPOINT}/replace?filedId=${fileId}`,
+    {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    },
+).then(r => r.json());
+
+export const mockedPostReplaceAreaImageFile: PostReplace = (fileId) => {
     throw new Error('Not implemented');
 };
 
-export const mockedPostReplaceAreaImageFile: PostReplace = (fileId: string) => {
+export const getImageFile: GetFile = (fileId) => fetch(
+    `${BACKEND_ENDPOINT}/file?filedId=${fileId}`,
+    { method: 'GET' },
+).then(r => r.body);
+
+export const mockedGetImageFile: GetFile = (fileId) => {
     throw new Error('Not implemented');
 };
 
-export const getImageFile: GetFile = (fileId: string) => {
-    throw new Error('Not implemented');
-};
+export const getImageFileStatus: GetStatus = (fileId) => fetch(
+    `${BACKEND_ENDPOINT}/status?filedId=${fileId}`,
+    { method: 'GET' },
+).then(r => r.json());
 
-export const mockedGetImageFile: GetFile = (fileId: string) => {
-    throw new Error('Not implemented');
-};
-
-export const getImageFileStatus: GetStatus = (fileId: string) => {
-    throw new Error('Not implemented');
-};
-
-export const mockedGetImageFileStatus: GetStatus = (fileId: string) => {
+export const mockedGetImageFileStatus: GetStatus = (fileId) => {
     throw new Error('Not implemented');
 };
