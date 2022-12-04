@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Container, Divider, LinearProgress } from '@mui/material';
+import { Box, Container, Divider, LinearProgress } from '@mui/material';
 import { FileSelectCard } from './FileSelectCard';
 import { MainAppBar } from './MainAppBar';
 import { ImageMeta } from '../types/ImageMeta';
@@ -8,11 +8,16 @@ import { useAsyncFn } from 'react-use';
 import { postImageFile } from '../api/backendApi';
 import { imageToBlob } from '../utils/image';
 import { ImageRepaintingWidget } from './ImageRepaintingWidget';
+import { useSnackbar } from 'notistack';
 
 export const Homepage: React.FC = () => {
+    const { enqueueSnackbar } = useSnackbar();
     const [imageMeta, setImageMeta] = useState<ImageMeta | null>(null);
     const [imageMetaLoading, setImageMetaLoading] = useState(false);
-    const [{ loading: loadingUpload, value: valueUpload }, uploadImage] = useAsyncFn(postImageFile);
+    const [{ loading: loadingUpload, value: valueUpload }, uploadImage] = useAsyncFn((blob: Blob) => postImageFile(blob).catch(e => {
+        enqueueSnackbar('An error occurred while uploading the image', { variant: 'error' });
+        throw e;
+    }));
     const handleImageUrlChange = useCallback((imageUrl: string) => {
         const image = new Image();
         image.onload = function() { // <- This has to be a function (because of the `this`)
