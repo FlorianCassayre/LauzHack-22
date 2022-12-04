@@ -8,6 +8,10 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
 from starlette.responses import Response, FileResponse
+import json
+from PIL import Image
+import numpy as np
+from numpy import asarray
 
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
@@ -47,7 +51,7 @@ add_timing_middleware(app, record=logger.info, prefix="app", exclude="untimed")
 async def store_file(file):
     # Save file
     file_id = uuid.uuid4()
-    file_path = f"{TMP_FOLDER}/geotagseo-{file_id}"
+    file_path = f"{TMP_FOLDER}/lauzhack-{file_id}"
 
     with open(file_path, "wb") as binary_file:
         binary_file.write(await file.read())
@@ -68,7 +72,7 @@ async def postFile(response: Response, file: UploadFile = File(...)):
 
 @app.get("/file")
 async def getfile(fileId: str):
-    file_path = f"{TMP_FOLDER}/geotagseo-{fileId}"
+    file_path = f"{TMP_FOLDER}/lauzhack-{fileId}"
     return FileResponse(file_path)
 
 class Rectangle(BaseModel):
@@ -80,11 +84,45 @@ class Rectangle(BaseModel):
 class Body(BaseModel):
     rectangle: Rectangle
     replace_by: str
+    file_id: str
+
+def call_to_george(file_path, mask_path):
+    path_to_result = ""
+    return path_to_result
 
 @app.post("/replace")
 async def postFile(parameters: Body):
+    file_path = f"{TMP_FOLDER}/lauzhack-{parameters.file_id}"
+
+    # call you
+    img = Image.open(file_path)
+    mask_image = Image.new(mode="RGB", size=(img.width, img.height))
+
+    # Set it to black
+    numpydata = asarray(mask_image)
+    numpydata = numpydata + 1
+    numpydata = numpydata * 255
+
+    # change the color in that region to black
+    from_x = int(parameters.rectangle.min_x)
+    from_y = int(parameters.rectangle.min_y)
+
+    to_x = int(parameters.rectangle.max_x)
+    to_y = int(parameters.rectangle.max_y)
+
+    numpydata[from_y:to_y,from_x:to_x] = [0, 0, 0]
+    result_image = Image.fromarray(numpydata)
+    path_to_mask = f"{TMP_FOLDER}/lauzhack-{parameters.file_id}.mask"
+    result_image.save(path_to_mask)
+
+    pathToResult = call_to_george(file_path, path_to_mask)
+    return FileResponse(pathToResult)
+
+
+@app.post("/status")
+async def status(fileId: str):
     fileId = "coming"
-    return JSONResponse(status_code=200, content={"fileId": fileId})
+    # todo
 
 
 @app.get("/ping")
