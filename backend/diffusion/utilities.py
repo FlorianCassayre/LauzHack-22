@@ -3,7 +3,7 @@ import time
 import requests as r
 from PIL.WebPImagePlugin import Image
 import base64
-API_KEY = "hvKgnDdSlofSskGJP-qEJQ"
+API_KEY = "KPVtGnBF0d8rdCuDW4r-Mw"
 
 def convert_to_webp(original):
     converted = Image.open(original)
@@ -56,7 +56,7 @@ def upload_image_with_mask(img, mask, prompt, width, height):
             ],
             "karras": False,
             "steps": 50,
-            "n": 4
+            "n": 1
         },
         "nsfw": False,
         "trusted_workers": True,
