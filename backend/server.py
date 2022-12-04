@@ -66,6 +66,7 @@ async def postFile(response: Response, file: UploadFile = File(...)):
 @app.get("/file")
 async def getfile(fileId: str):
     file_path = f"{TMP_FOLDER}/lauzhack-{fileId}.jpg"
+    print("Check", file_path)
 
     isExist = os.path.exists(file_path)
     if(isExist):
