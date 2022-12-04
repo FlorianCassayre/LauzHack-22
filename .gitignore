@@ -4,6 +4,7 @@
 .vscode
 venv
 .env
+secrets
 node_modules
 build
 npm-debug.log*
