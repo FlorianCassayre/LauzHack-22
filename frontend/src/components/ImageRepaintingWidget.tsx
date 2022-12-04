@@ -10,8 +10,8 @@ import { useAsyncFn } from 'react-use';
 import { ReplaceBy } from '../types/ReplaceBy';
 import { getImageFile, postReplaceAreaImageFile } from '../api/backendApi';
 import { blobToImage } from '../utils/image';
-
-const POLLING_INTERVAL = 2000;
+import { useSnackbar } from 'notistack';
+import { GetFile, PostReplace } from '../api/types';
 
 interface ImageRepaintingWidgetProps {
     imageMeta: ImageMeta;
@@ -20,8 +20,21 @@ interface ImageRepaintingWidgetProps {
 
 export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ imageMeta, onResetFile }) => {
     // TODO labels
-    const [{ loading: loadingReplace }, replaceImage] = useAsyncFn(postReplaceAreaImageFile);
-    const [{ loading: loadingReplacedImage, value: valueReplacedImage }, getReplacedImage] = useAsyncFn(getImageFile);
+    const { enqueueSnackbar } = useSnackbar();
+    const [{ loading: loadingReplace }, replaceImage] = useAsyncFn((body: Parameters<PostReplace>[0]) =>
+        postReplaceAreaImageFile(body)
+        .catch(e => {
+            enqueueSnackbar('An error occurred while painting the image', { variant: 'error' });
+            throw e;
+        })
+    );
+    const [{ loading: loadingReplacedImage, value: valueReplacedImage }, getReplacedImage] = useAsyncFn((fileId: Parameters<GetFile>[0]) =>
+        getImageFile(fileId)
+            .catch(e => {
+                enqueueSnackbar('An error occurred while retrieving the painted', { variant: 'error' });
+                throw e;
+            })
+    );
     const [replacedImage, setReplacedImage] = useState<HTMLImageElement | null>(null);
     useEffect(() => {
         if (valueReplacedImage) {
@@ -41,13 +54,14 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
                 max_y: crop.y + crop.height,
             },
             replace_by: replaceBy,
-        }).then(({ file_id }) => getReplacedImage(file_id));
+        })
+            .then((obj) => obj && getReplacedImage(obj.file_id));
     };
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} textAlign="center">
-                <Button variant="outlined" startIcon={<Delete />} onClick={() => onResetFile()} disabled={loadingReplace} sx={{ mb: 2 }}>
+                <Button variant="outlined" color="inherit" startIcon={<Delete />} onClick={() => onResetFile()} disabled={loadingReplace} sx={{ mb: 2 }}>
                     Remove file
                 </Button>
             </Grid>
@@ -63,7 +77,7 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
                         <Typography sx={{ mb: 1, fontWeight: 'medium' }}>
                             After
                         </Typography>
-                        <ImageLabelCard imageMeta={{ ...imageMeta, ...(replacedImage ? { image: replacedImage } : {}) }} imageLabels={mockImageLabels} />
+                        <ImageLabelCard imageMeta={{ ...imageMeta, ...(replacedImage ? { image: replacedImage } : {}) }} imageLabels={mockImageLabels} hidden={!replacedImage} />
                     </Grid>
                 </>
             ) : (

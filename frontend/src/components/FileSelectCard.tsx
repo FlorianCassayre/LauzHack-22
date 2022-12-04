@@ -37,7 +37,7 @@ export const FileSelectCard: React.FC<FileSelectCardProps> = ({ onFileSelected, 
             />
             <Card variant="outlined" sx={{ width: '100%', borderStyle: 'dashed' }}>
                 <CardActionArea onClick={handleClick} disabled={disabled}>
-                    <CardContent sx={{ my: 6 }}>
+                    <CardContent sx={{ my: 8 }}>
                         <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
                             <FileUpload color="action" />
                             <Box color="text.secondary">
