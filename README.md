@@ -1,8 +1,14 @@
 # LauzHack-22
 
+Project name: **sustAInability**
+
+Please refer to our [DevPost](https://devpost.com/software/sustainabilitiy) page for more information.
+
+You may also watch [our demo video](https://youtu.be/JNPiUXHRBic).
+
 ## Ownership
 
-Excluding the images, all the source code files are our own work.
+Excluding some images, all the source code is our own work.
 
 ## Development
 
@@ -11,6 +17,10 @@ Excluding the images, all the source code files are our own work.
 Directory `backend`.
 
 Runs on Python 3 with a pip installation.
+
+You need to have the environment variable `DIFKEY` defined.
+
+Then run the following commands:
 
 ```
 pip install -r requirements.txt

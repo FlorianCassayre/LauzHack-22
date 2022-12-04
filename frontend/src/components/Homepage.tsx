@@ -86,7 +86,7 @@ export const Homepage: React.FC = () => {
             <Box textAlign="center" sx={{ mt: 'auto', bgcolor: 'grey.200', py: 3, color: 'text.secondary' }}>
                 <Stack spacing={2}>
                     <Box>
-                        Developed for <Link href="https://lauzhack.com/" target="_blank">LauzHack 2022</Link>
+                        A project developed during <Link href="https://lauzhack.com/" target="_blank">LauzHack 2022</Link>
                     </Box>
                     <Box>
                         <Link href="https://github.com/FlorianCassayre/LauzHack-22" target="_blank" color="inherit">
