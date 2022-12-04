@@ -3,6 +3,7 @@ import time
 import requests as r
 from PIL.WebPImagePlugin import Image
 import base64
+API_KEY = "hvKgnDdSlofSskGJP-qEJQ"
 
 def convert_to_webp(original):
     converted = Image.open(original)
@@ -34,7 +35,7 @@ def webp_to_string(path):
 def upload_image_with_mask(img, mask, prompt, width, height):
     endpoint = "https://stablehorde.net/api/v2/generate/async"
 
-    headers = {"apikey": "hvKgnDdSlofSskGJP-qEJQ", "Content-Type": "application/json"}
+    headers = {"apikey": API_KEY, "Content-Type": "application/json"}
 
     params = {
         "prompt": prompt,
@@ -81,7 +82,7 @@ def generate_image(prompt):
     print("Generate image")
     endpoint = "https://stablehorde.net/api/v2/generate/async"
 
-    headers = {"apikey": "hvKgnDdSlofSskGJP-qEJQ", "Content-Type": "application/json"}
+    headers = {"apikey": API_KEY, "Content-Type": "application/json"}
 
     params = {
         "prompt": prompt,
@@ -120,7 +121,7 @@ def generate_image(prompt):
 def check_progress(request_id):
     endpoint = f"https://stablehorde.net/api/v2/generate/check/{request_id}"
 
-    headers = {"apikey": "hvKgnDdSlofSskGJP-qEJQ", "Content-Type": "application/json"}
+    headers = {"apikey": API_KEY, "Content-Type": "application/json"}
 
     params = {
         "id": request_id
@@ -137,7 +138,7 @@ def check_progress(request_id):
 def fetch_result(request_id):
     endpoint = f"https://stablehorde.net/api/v2/generate/status/{request_id}"
 
-    headers = {"apikey": "hvKgnDdSlofSskGJP-qEJQ", "Content-Type": "application/json"}
+    headers = {"apikey": API_KEY, "Content-Type": "application/json"}
 
     params = {
         "id": request_id
