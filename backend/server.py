@@ -141,7 +141,7 @@ async def postFile(parameters: Body):
     ## resize back
     if new_width != img.width or new_height != img.height:
         new_file = Image.open(output_file)
-        new_file = add_margin(new_file, 0, -(new_height - img.height), -(new_width - img.width), 0, (0, 0, 0))
+        new_file = add_margin(new_file, new_height, new_width)
         new_file = new_file.convert('RGB')
         new_file.save(output_file)
 
