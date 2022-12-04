@@ -10,6 +10,7 @@ from PIL import Image
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_utils.timing import add_timing_middleware
+from classifier.yolov5 import yolov5
 from numpy import asarray
 from pydantic import BaseModel
 from starlette.middleware import Middleware
@@ -117,7 +118,10 @@ async def postFile(parameters: Body):
     #
     # mask_image = Image.new(mode="RGB", size=(new_width, new_height))
     # Set it to black
-    numpydata = asarray(img)
+    mask_image = Image.new(mode="RGB", size=(img.width, img.height))
+    # Set it to black
+    numpydata = asarray(mask_image)
+
     numpydata = numpydata + 1
     numpydata = numpydata * 255
 
@@ -156,6 +160,14 @@ async def postFile(parameters: Body):
         'file_id': file_id,
     }
 
+@app.get("/classification")
+async def classification(fileId: str):
+    file_path = f"{TMP_FOLDER}/lauzhack-{fileId}.jpg"
+    isExist = os.path.exists(file_path)
+    if (isExist):
+        return yolov5(file_path)
+    else:
+        raise HTTPException(status_code=404)
 
 @app.get("/ping")
 async def ping():
