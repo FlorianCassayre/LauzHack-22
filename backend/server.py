@@ -1,29 +1,17 @@
 import logging
-import os
 import uuid
 
-import magic
-import starlette.datastructures
 import uvicorn
-from dotenv import load_dotenv
-from fastapi.responses import JSONResponse
-from starlette.responses import Response, FileResponse
-import json
 from PIL import Image
-import numpy as np
-from numpy import asarray
-
-
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_utils.timing import add_timing_middleware
-from starlette.middleware import Middleware
-from starlette.responses import Response
-from typing import Optional
+from numpy import asarray
 from pydantic import BaseModel
+from starlette.middleware import Middleware
+from starlette.responses import FileResponse
+from starlette.responses import Response
 
-
-load_dotenv()
 TMP_FOLDER = "/tmp"
 origins = []
 
