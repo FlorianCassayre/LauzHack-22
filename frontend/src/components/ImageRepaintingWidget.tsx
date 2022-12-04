@@ -1,5 +1,5 @@
 import { Button, CircularProgress, Grid, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Delete } from '@mui/icons-material';
 import { mockImageLabels } from '../data/mock';
 import { ImageCropCard } from './ImageCropCard';
@@ -9,6 +9,7 @@ import { Crop } from 'react-image-crop';
 import { useAsyncFn } from 'react-use';
 import { ReplaceBy } from '../types/ReplaceBy';
 import { getImageFile, postReplaceAreaImageFile } from '../api/backendApi';
+import { blobToImage } from '../utils/image';
 
 const POLLING_INTERVAL = 2000;
 
@@ -19,17 +20,17 @@ interface ImageRepaintingWidgetProps {
 
 export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ imageMeta, onResetFile }) => {
     // TODO labels
-    const [{ loading: loadingReplace, value: valueReplace }, replaceImage] = useAsyncFn(postReplaceAreaImageFile);
+    const [{ loading: loadingReplace }, replaceImage] = useAsyncFn(postReplaceAreaImageFile);
     const [{ loading: loadingReplacedImage, value: valueReplacedImage }, getReplacedImage] = useAsyncFn(getImageFile);
-    /*useEffect(() => {
-        if (valueReplace) {
-            // Not great but works I guess
-            const intervalId = setInterval(() => {
-                getReplacedImage(valueReplace.fileId);
-            }, POLLING_INTERVAL);
-            return () => clearInterval(intervalId);
+    const [replacedImage, setReplacedImage] = useState<HTMLImageElement | null>(null);
+    useEffect(() => {
+        if (valueReplacedImage) {
+            blobToImage(valueReplacedImage, setReplacedImage);
+        } else {
+            setReplacedImage(null);
         }
-    }, [valueReplace]);*/
+    }, [valueReplacedImage, setReplacedImage]);
+
     const handleCropConfirm = (crop: Crop, replaceBy: ReplaceBy) => {
         replaceImage({
             file_id: imageMeta.fileId,
@@ -40,13 +41,13 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
                 max_y: crop.y + crop.height,
             },
             replace_by: replaceBy,
-        });
+        }).then(({ file_id }) => getReplacedImage(file_id));
     };
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} textAlign="center">
-                <Button variant="outlined" startIcon={<Delete />} onClick={() => onResetFile()} sx={{ mb: 2 }}>
+                <Button variant="outlined" startIcon={<Delete />} onClick={() => onResetFile()} disabled={loadingReplace} sx={{ mb: 2 }}>
                     Remove file
                 </Button>
             </Grid>
@@ -62,7 +63,7 @@ export const ImageRepaintingWidget: React.FC<ImageRepaintingWidgetProps> = ({ im
                         <Typography sx={{ mb: 1, fontWeight: 'medium' }}>
                             After
                         </Typography>
-                        <ImageLabelCard imageMeta={imageMeta} imageLabels={mockImageLabels} />
+                        <ImageLabelCard imageMeta={{ ...imageMeta, ...(replacedImage ? { image: replacedImage } : {}) }} imageLabels={mockImageLabels} />
                     </Grid>
                 </>
             ) : (

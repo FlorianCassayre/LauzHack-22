@@ -19,8 +19,8 @@ export const Homepage: React.FC = () => {
             const { width, height } = this as any;
             // Create blob
             imageToBlob(image, blob => {
-                uploadImage(blob).then(({ fileId }) => {
-                    setImageMeta({ fileId, image: image, url: imageUrl, width, height });
+                uploadImage(blob).then(({ file_id }) => {
+                    setImageMeta({ fileId: file_id, image: image, url: imageUrl, width, height });
                     setImageMetaLoading(false);
                 });
             });

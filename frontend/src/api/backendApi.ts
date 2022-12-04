@@ -1,6 +1,10 @@
 import { GetFile, GetStatus, PostImage, PostReplace } from './types';
 
-const BACKEND_ENDPOINT = 'http://localhost:8080';
+const BACKEND_ENDPOINT = process.env.REACT_APP_BACKEND_ENDPOINT as string;
+
+if (!BACKEND_ENDPOINT) {
+    console.error('Environment variable REACT_APP_BACKEND_ENDPOINT is not set, please define it in .env');
+}
 
 export const postImageFile: PostImage = (imageBlob) => {
     const formData = new FormData();
@@ -15,13 +19,13 @@ export const mockedPostImageFile: PostImage = (imageBlob) => {
     console.log(imageBlob);
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve({ fileId: `${Math.random()}` });
+            resolve({ file_id: `${Math.random()}` });
         }, 1000)
     })
 };
 
 export const postReplaceAreaImageFile: PostReplace = (body) => fetch(
-    `${BACKEND_ENDPOINT}/replace?filedId=${body.file_id}`,
+    `${BACKEND_ENDPOINT}/replace?fileId=${body.file_id}`,
     {
         method: 'POST',
         body: JSON.stringify(body),
@@ -36,16 +40,16 @@ export const mockedPostReplaceAreaImageFile: PostReplace = (fileId) => {
 };
 
 export const getImageFile: GetFile = (fileId) => fetch(
-    `${BACKEND_ENDPOINT}/file?filedId=${fileId}`,
+    `${BACKEND_ENDPOINT}/file?fileId=${fileId}`,
     { method: 'GET' },
-).then(r => r.body);
+).then(r => r.blob());
 
 export const mockedGetImageFile: GetFile = (fileId) => {
     throw new Error('Not implemented');
 };
 
 export const getImageFileStatus: GetStatus = (fileId) => fetch(
-    `${BACKEND_ENDPOINT}/status?filedId=${fileId}`,
+    `${BACKEND_ENDPOINT}/status?fileId=${fileId}`,
     { method: 'GET' },
 ).then(r => r.json());
 

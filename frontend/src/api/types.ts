@@ -1,7 +1,7 @@
 import { ReplaceBy } from '../types/ReplaceBy';
 
 interface PostImageResponse {
-    fileId: string;
+    file_id: string;
 }
 
 interface PostReplaceRequestBody {
@@ -16,7 +16,7 @@ interface PostReplaceRequestBody {
 }
 
 interface PostReplaceResponse {
-    fileId: string;
+    file_id: string;
 }
 
 interface GetStatusResponse {
